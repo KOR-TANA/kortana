@@ -1,0 +1,24 @@
+name: AI Code Generation Pipeline
+on:
+  workflow_dispatch:
+    inputs:
+      task_id:
+        required: true
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with: {python-version: '3.9'}
+      - run: pip install PyGithub
+      - name: Run AI Orchestrator
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: python scripts/orchestrator.py
